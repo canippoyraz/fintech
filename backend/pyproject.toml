@@ -1,7 +1,7 @@
 [project]
-name = "finally-backend"
+name = "fintech-backend"
 version = "0.1.0"
-description = "FinAlly backend - AI Trading Workstation"
+description = "FinTech backend - AI Trading Workstation"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

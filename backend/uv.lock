@@ -164,7 +164,7 @@ wheels = [
 ]
 
 [[package]]
-name = "finally-backend"
+name = "fintech-backend"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

@@ -1,4 +1,4 @@
-# FinAlly — AI Trading Workstation
+# FinTech — AI Trading Workstation
 
 A visually stunning AI-powered trading workstation that streams live market data, simulates portfolio trading, and integrates an LLM chat assistant that can analyze positions and execute trades via natural language.
 
@@ -31,8 +31,8 @@ cp .env.example .env
 # Add your OPENROUTER_API_KEY to .env
 
 # Run with Docker
-docker build -t finally .
-docker run -v finally-data:/app/db -p 8000:8000 --env-file .env finally
+docker build -t fintech .
+docker run -v fintech-data:/app/db -p 8000:8000 --env-file .env fintech
 
 # Open http://localhost:8000
 ```
@@ -48,7 +48,7 @@ docker run -v finally-data:/app/db -p 8000:8000 --env-file .env finally
 ## Project Structure
 
 ```
-finally/
+fintech/
 ├── frontend/    # Next.js static export
 ├── backend/     # FastAPI uv project
 ├── planning/    # Project documentation and agent contracts

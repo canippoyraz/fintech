@@ -1,1 +1,1 @@
-"""FinAlly backend application."""
+"""FinTech backend application."""
