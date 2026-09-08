@@ -21,9 +21,56 @@ shutdown stops it. Live objects hang off `app.state`:
   routers capture it when they mount, which happens before startup runs
 - `app.state.market_source` — the running `MarketDataSource` (None before startup)
 
-Endpoints so far: `GET /api/health`, `GET /api/stream/prices`. If a directory
-exists at `FINTECH_STATIC_DIR` (default `static`), it is mounted at `/` to serve
-the built frontend; API routes are registered first so they always take priority.
+Endpoints so far:
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/health` | Status, active DB, feed type, tickers tracked |
+| GET | `/api/stream/prices` | SSE price stream |
+| GET | `/api/portfolio` | Cash, positions valued live, aggregate P&L |
+| POST | `/api/portfolio/trade` | Market order; 400 on validation failure |
+| GET | `/api/portfolio/history` | Value snapshots, oldest first (`?limit=`) |
+| GET | `/api/watchlist` | Watched tickers with latest prices |
+| POST | `/api/watchlist` | Add; 201 created, 409 if already watched |
+| DELETE | `/api/watchlist/{ticker}` | Remove; 204, 404 if not watched |
+
+Still to build: `POST /api/chat`.
+
+If a directory exists at `FINTECH_STATIC_DIR` (default `static`), it is mounted
+at `/` to serve the built frontend; API routes are registered first so they
+always take priority.
+
+### Two rules the feed depends on
+
+- **Startup tracks watchlist ∪ holdings.** A position must keep streaming even
+  once unwatched, or it can't be valued. Removing a watched ticker you hold stops
+  nothing; selling out then unwatching does.
+- **Trades are one transaction.** Cash, position, trade log, and snapshot commit
+  together, so a rejected trade leaves no trace.
+
+## Portfolio & Watchlist APIs
+
+```python
+from app.portfolio import get_portfolio, execute_trade, get_history, record_snapshot
+from app.watchlist import list_watchlist, add_to_watchlist, remove_from_watchlist
+```
+
+Each feature is a package of `models.py` (Pydantic schemas), `service.py`
+(logic, database-facing), and `router.py` (a `create_*_router(price_cache)`
+factory, matching `create_stream_router`). Service functions raise domain
+exceptions — `TradeError`, `DuplicateTickerError`, `TickerNotFoundError` — and
+routers map those to status codes; services never import `fastapi`.
+
+Money is rounded to cents on every write so repeated trades can't drift.
+Quantities stay unrounded (fractional shares); a holding below `EPSILON` after a
+sell is deleted rather than left as dust. Buys move average cost, sells don't.
+
+`app/tickers.py::normalize_ticker` is the single place symbol shape is decided.
+
+Tests use the `api` fixture (`tests/conftest.py`) — a TestClient wired to
+`StaticDataSource`, a feed whose prices never move, so trade and P&L figures can
+be asserted exactly. The `static_cache` fixture does the same for service-level
+tests.
 
 ### Environment Variables
 
