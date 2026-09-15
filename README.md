@@ -2,9 +2,9 @@
 
 FinTech is an AI-powered trading workstation with a dark, Bloomberg-style terminal UI. Stream live market data over SSE, trade a simulated $10k portfolio, and let an LLM copilot analyze positions and execute trades from natural-language chat. Single Docker container: FastAPI + static Next.js frontend.
 
-Built entirely by coding agents as a capstone project for an agentic AI coding course.
+Built entirely by coding agents, demonstrating an agentic AI development workflow.
 
-> Built on the course template from [ed-donner/finally](https://github.com/ed-donner/finally) (MIT). Original copyright retained in [LICENSE](LICENSE).
+> Built on a template from [ed-donner/finally](https://github.com/ed-donner/finally) (MIT). Original copyright retained in [LICENSE](LICENSE).
 
 ## Features
 
